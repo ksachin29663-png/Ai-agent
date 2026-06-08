@@ -2,43 +2,75 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <title>Sachin's Pro Engine</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sachin's Revolutionary AI</title>
     <style>
-        body { background: #121212; color: #fff; font-family: sans-serif; padding: 15px; }
-        #chat-box { height: 70vh; overflow-y: auto; margin-bottom: 10px; }
-        .msg { padding: 10px; margin: 5px; border-radius: 10px; }
-        .user { background: #007bff; text-align: right; }
-        .engine { background: #333; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0f0f0f; color: #eee; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        #chat-box { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .msg { padding: 12px 18px; border-radius: 15px; max-width: 80%; line-height: 1.5; }
+        .user { background: #0056b3; align-self: flex-end; }
+        .engine { background: #222; align-self: flex-start; border: 1px solid #444; }
+        .controls { padding: 15px; background: #1a1a1a; display: flex; gap: 10px; border-top: 1px solid #333; }
+        input { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #444; background: #000; color: #fff; }
+        button { padding: 10px 20px; background: #0056b3; color: white; border: none; border-radius: 8px; cursor: pointer; }
     </style>
 </head>
 <body>
+
     <div id="chat-box"></div>
-    <input type="text" id="userInput" style="width:70%; padding:10px;">
-    <button onclick="askEngine()">भेजें</button>
+    <div class="controls">
+        <input type="text" id="userInput" placeholder="पूछें, सिखाएं या 'Google:' लिखें...">
+        <button onclick="startVoice()">👆</button>
+        <button onclick="askEngine()">भेजें</button>
+    </div>
 
     <script>
-        // यह रहा तुम्हारा पूरा ज्ञान का भंडार (इसे कोड के अंदर ही रहने दो)
-        const knowledge = {
-            "hi": "नमस्ते सचिन! मैं तुम्हारा अपना एआई असिस्टेंट हूँ। बताओ, आज कौन सा प्रोजेक्ट शुरू करें?",
-            "flutter": "Flutter गूगल का फ्रेमवर्क है। इसमें हम Dart भाषा इस्तेमाल करते हैं। यह 'Everything is a Widget' के सिद्धांत पर काम करता है।",
-            "node": "Node.js जावास्क्रिप्ट को सर्वर पर चलाने का काम करता है। यह बहुत तेज़ है और 'npm' इसका पैकेज मैनेजर है।",
-            "coding": "कोडिंग का मतलब है लॉजिक बनाना। हमेशा छोटे हिस्सों में समस्या को हल करो।",
-            "सचिन": "सचिन एक बहुत ही होनहार डेवलपर है जो बिना किसी API के अपना खुद का एआई इंजन बना रहा है!",
-            "कैसे हो": "मैं बिल्कुल ठीक हूँ, बस तुम्हारे कोड का इंतज़ार कर रहा हूँ!"
+        let brain = JSON.parse(localStorage.getItem('sachinMasterBrain')) || {
+            "hi": "नमस्ते सचिन! मैं तुम्हारा क्रांतिकारी एआई हूँ। बताओ आज क्या सीखेंगे?"
         };
 
         function askEngine() {
-            let input = document.getElementById("userInput").value.toLowerCase().trim();
+            let input = document.getElementById("userInput").value;
             let chatBox = document.getElementById("chat-box");
-            if (!input) return;
+            if (!input.trim()) return;
 
             chatBox.innerHTML += `<div class="msg user">${input}</div>`;
-            
-            // यह चेक करेगा कि क्या इनपुट हमारे knowledge में है
-            let response = knowledge[input] || "मुझे नहीं पता, लेकिन तुम मुझे सिखा सकते हो 'learn: कीवर्ड: उत्तर' लिखकर।";
+            let lower = input.toLowerCase().trim();
 
-            chatBox.innerHTML += `<div class="msg engine">${response}</div>`;
+            // 1. अगर 'learn:' है तो सिखाएं
+            if (lower.startsWith("learn:")) {
+                let p = input.split(":");
+                brain[p[1].trim().toLowerCase()] = p[2].trim();
+                localStorage.setItem('sachinMasterBrain', JSON.stringify(brain));
+                chatBox.innerHTML += `<div class="msg engine">सीख लिया! अब मुझे यह याद रहेगा।</div>`;
+            } 
+            // 2. गूगल सर्च के लिए
+            else if (lower.startsWith("google:")) {
+                let query = input.split(":")[1];
+                let url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+                chatBox.innerHTML += `<div class="msg engine">मैंने गूगल पर ढूँढा: <a href="${url}" target="_blank" style="color:#00aaff;">यहाँ क्लिक करें</a></div>`;
+            }
+            // 3. जवाब दें
+            else if (brain[lower]) {
+                chatBox.innerHTML += `<div class="msg engine">${brain[lower]}</div>`;
+            }
+            // 4. कुछ न पता हो तो गूगल का सुझाव दें
+            else {
+                chatBox.innerHTML += `<div class="msg engine">मुझे यह नहीं पता। सिखाने के लिए 'learn: कीवर्ड: जवाब' लिखें या 'Google: सवाल' लिखें।</div>`;
+            }
+
             document.getElementById("userInput").value = "";
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function startVoice() {
+            let rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            rec.lang = 'hi-IN';
+            rec.start();
+            rec.onresult = (e) => {
+                document.getElementById("userInput").value = e.results[0][0].transcript;
+                askEngine();
+            };
         }
     </script>
 </body>
