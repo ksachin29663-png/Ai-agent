@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sachin's Dev Engine</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+        #chat-box { height: 300px; overflow-y: scroll; background: white; padding: 10px; border: 1px solid #ccc; margin-bottom: 10px; }
+        input { width: 70%; padding: 10px; }
+        button { padding: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <h2>Sachin's Personal AI Engine</h2>
+    <div id="chat-box"></div>
+    <input type="text" id="userInput" placeholder="अपनी कोडिंग समस्या बताएं...">
+    <button onclick="askEngine()">Run Query</button>
+
+    <script>
+        // यह तुम्हारा अपना 'ज्ञान का भंडार' है
+        let brain = JSON.parse(localStorage.getItem('sachinBrain')) || {
+            "flutter": "Flutter के लिए 'Column', 'Row' और 'Scaffold' का उपयोग करो।",
+            "node": "Node.js के लिए 'npm init' और 'express' का उपयोग करो।",
+            "android": "Android के लिए Termux और Acode सबसे बेहतरीन टूल्स हैं।",
+            "hello": "नमस्ते! मैं सचिन का बनाया हुआ असिस्टेंट हूँ, अपना कोडिंग सवाल पूछो।"
+        };
+
+        function askEngine() {
+            let input = document.getElementById("userInput").value.toLowerCase();
+            let chatBox = document.getElementById("chat-box");
+            let response = "";
+
+            // लॉजिक इंजन
+            if (brain[input]) {
+                response = brain[input];
+            } else if (input.startsWith("learn:")) {
+                // नया ज्ञान सिखाने का तरीका (जैसे: "learn: react: React is for UI")
+                let parts = input.split(":");
+                brain[parts[1].trim()] = parts[2].trim();
+                localStorage.setItem('sachinBrain', JSON.stringify(brain));
+                response = "मैंने यह सीख लिया!";
+            } else {
+                response = "मुझे इसका उत्तर नहीं पता। मुझे सिखाने के लिए टाइप करें: 'learn: कीवर्ड: उत्तर'";
+            }
+
+            chatBox.innerHTML += `<p><b>तुम:</b> ${input}</p>`;
+            chatBox.innerHTML += `<p><b>Engine:</b> ${response}</p>`;
+            document.getElementById("userInput").value = "";
+        }
+    </script>
+</body>
+  </html>
+  
