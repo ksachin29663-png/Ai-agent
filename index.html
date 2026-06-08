@@ -2,59 +2,43 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <title>Sachin's Pro Dev Engine</title>
+    <title>Sachin's Pro Engine</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #222; color: #fff; }
-        #chat-box { height: 350px; overflow-y: scroll; background: #333; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
-        input { width: 65%; padding: 12px; border-radius: 5px; border: none; }
-        button { padding: 12px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 5px; }
+        body { background: #121212; color: #fff; font-family: sans-serif; padding: 15px; }
+        #chat-box { height: 70vh; overflow-y: auto; margin-bottom: 10px; }
+        .msg { padding: 10px; margin: 5px; border-radius: 10px; }
+        .user { background: #007bff; text-align: right; }
+        .engine { background: #333; }
     </style>
 </head>
 <body>
-
-    <h2>Sachin's Pro Dev Engine</h2>
     <div id="chat-box"></div>
-    <input type="text" id="userInput" placeholder="कुछ पूछें या सिखाएं...">
+    <input type="text" id="userInput" style="width:70%; padding:10px;">
     <button onclick="askEngine()">भेजें</button>
 
     <script>
-        // यह तुम्हारा 'मास्टर नॉलेज बेस' है
-        let brain = JSON.parse(localStorage.getItem('sachinBrain')) || {
-            "hii": "नमस्ते! मैं सचिन का बनाया हुआ एआई असिस्टेंट हूँ।",
-            "flutter": "Flutter में 'Column' और 'Row' का उपयोग करके UI बनाएं।",
-            "node": "Node.js के लिए 'npm install express' का उपयोग करें।",
-            "android": "Android के लिए Acode और Termux बेस्ट हैं।",
-            "html": "HTML संरचना (structure) के लिए होता है।",
-            "javascript": "JS लॉजिक के लिए है।",
-            "सचिन": "सचिन एक प्रो डेवलपर है जो बिना API के अपना खुद का सिस्टम बना रहा है!",
-            "help": "तुम मुझसे कोडिंग के बारे में पूछ सकते हो या 'learn: कीवर्ड: जानकारी' लिखकर मुझे कुछ भी नया सिखा सकते हो।"
+        // यह रहा तुम्हारा पूरा ज्ञान का भंडार (इसे कोड के अंदर ही रहने दो)
+        const knowledge = {
+            "hi": "नमस्ते सचिन! मैं तुम्हारा अपना एआई असिस्टेंट हूँ। बताओ, आज कौन सा प्रोजेक्ट शुरू करें?",
+            "flutter": "Flutter गूगल का फ्रेमवर्क है। इसमें हम Dart भाषा इस्तेमाल करते हैं। यह 'Everything is a Widget' के सिद्धांत पर काम करता है।",
+            "node": "Node.js जावास्क्रिप्ट को सर्वर पर चलाने का काम करता है। यह बहुत तेज़ है और 'npm' इसका पैकेज मैनेजर है।",
+            "coding": "कोडिंग का मतलब है लॉजिक बनाना। हमेशा छोटे हिस्सों में समस्या को हल करो।",
+            "सचिन": "सचिन एक बहुत ही होनहार डेवलपर है जो बिना किसी API के अपना खुद का एआई इंजन बना रहा है!",
+            "कैसे हो": "मैं बिल्कुल ठीक हूँ, बस तुम्हारे कोड का इंतज़ार कर रहा हूँ!"
         };
 
         function askEngine() {
             let input = document.getElementById("userInput").value.toLowerCase().trim();
             let chatBox = document.getElementById("chat-box");
-            
             if (!input) return;
 
-            let response = "";
+            chatBox.innerHTML += `<div class="msg user">${input}</div>`;
+            
+            // यह चेक करेगा कि क्या इनपुट हमारे knowledge में है
+            let response = knowledge[input] || "मुझे नहीं पता, लेकिन तुम मुझे सिखा सकते हो 'learn: कीवर्ड: उत्तर' लिखकर।";
 
-            if (input.startsWith("learn:")) {
-                let parts = input.split(":");
-                if (parts.length >= 3) {
-                    brain[parts[1].trim()] = parts[2].trim();
-                    localStorage.setItem('sachinBrain', JSON.stringify(brain));
-                    response = "सीख लिया! अब मैं इसे याद रखूँगा।";
-                }
-            } else if (brain[input]) {
-                response = brain[input];
-            } else {
-                response = "मुझे इसका उत्तर नहीं पता। मुझे सिखाने के लिए टाइप करें: 'learn: कीवर्ड: उत्तर'";
-            }
-
-            chatBox.innerHTML += `<p><b>तुम:</b> ${input}</p>`;
-            chatBox.innerHTML += `<p style="color: #00ff00;"><b>Engine:</b> ${response}</p>`;
+            chatBox.innerHTML += `<div class="msg engine">${response}</div>`;
             document.getElementById("userInput").value = "";
-            chatBox.scrollTop = chatBox.scrollHeight;
         }
     </script>
 </body>
