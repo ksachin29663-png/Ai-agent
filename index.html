@@ -19,47 +19,46 @@
 
     <div id="chat-box"></div>
     <div class="controls">
-        <input type="text" id="userInput" placeholder="पूछें, सिखाएं या 'Google:' लिखें...">
-        <button onclick="startVoice()">👆</button>
+        <input type="text" id="userInput" placeholder="कुछ पूछें या 'Google: सवाल'...">
+        <button onclick="startVoice()">🎙️</button>
         <button onclick="askEngine()">भेजें</button>
     </div>
 
     <script>
+        // पहले से लोड किया हुआ सारा ज्ञान (इसमें 50,000+ शब्द जोड़ सकते हो)
         let brain = JSON.parse(localStorage.getItem('sachinMasterBrain')) || {
-            "hi": "नमस्ते सचिन! मैं तुम्हारा क्रांतिकारी एआई हूँ। बताओ आज क्या सीखेंगे?"
+            "hi": "नमस्ते सचिन! मैं तुम्हारा अपना क्रांतिकारी एआई हूँ। आज हम कोडिंग में क्या धमाका करेंगे?",
+            "flutter": "Flutter गूगल का यूआई किट है, जिससे हम एंड्रॉइड और आईओएस के लिए शानदार ऐप्स बनाते हैं।",
+            "node": "Node.js सर्वर-साइड डेवलपमेंट के लिए है, यह जावास्क्रिप्ट को सर्वर पर चलाने की शक्ति देता है।",
+            "क्रांति": "क्रांति का मतलब है पुरानी सोच और गलत सिस्टम को बदलकर नया निर्माण करना।",
+            "इंसान": "इंसान भावनाओं और तर्क के मेल से बना है, उसे सम्मान और आजादी की भूख हमेशा रहती है।",
+            "कोडिंग": "कोडिंग सिर्फ कंप्यूटर की भाषा नहीं, यह विचार को हकीकत में बदलने का सबसे ताकतवर हथियार है।",
+            "सफलता": "सफलता का अर्थ है अपने सिद्धांतों पर अडिग रहकर समस्याओं को सुलझाते रहने का सफर।",
+            "डर": "डर इंसान की सबसे बड़ी रुकावट है, इसे जीतना ही विकास की पहली सीढ़ी है।",
+            "सचिन": "सचिन एक जुनूनी डेवलपर है जो बिना किसी बाहरी मदद के अपना खुद का एआई सिस्टम तैयार कर रहा है।",
+            "google": "अगर मुझे कुछ न पता हो, तो मैं गूगल सर्च का लिंक दे सकता हूँ। बस 'Google: सवाल' पूछो।"
         };
 
         function askEngine() {
-            let input = document.getElementById("userInput").value;
+            let inputField = document.getElementById("userInput");
+            let input = inputField.value;
             let chatBox = document.getElementById("chat-box");
             if (!input.trim()) return;
 
             chatBox.innerHTML += `<div class="msg user">${input}</div>`;
             let lower = input.toLowerCase().trim();
 
-            // 1. अगर 'learn:' है तो सिखाएं
-            if (lower.startsWith("learn:")) {
-                let p = input.split(":");
-                brain[p[1].trim().toLowerCase()] = p[2].trim();
-                localStorage.setItem('sachinMasterBrain', JSON.stringify(brain));
-                chatBox.innerHTML += `<div class="msg engine">सीख लिया! अब मुझे यह याद रहेगा।</div>`;
-            } 
-            // 2. गूगल सर्च के लिए
-            else if (lower.startsWith("google:")) {
+            if (lower.startsWith("google:")) {
                 let query = input.split(":")[1];
                 let url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
                 chatBox.innerHTML += `<div class="msg engine">मैंने गूगल पर ढूँढा: <a href="${url}" target="_blank" style="color:#00aaff;">यहाँ क्लिक करें</a></div>`;
-            }
-            // 3. जवाब दें
-            else if (brain[lower]) {
+            } else if (brain[lower]) {
                 chatBox.innerHTML += `<div class="msg engine">${brain[lower]}</div>`;
-            }
-            // 4. कुछ न पता हो तो गूगल का सुझाव दें
-            else {
-                chatBox.innerHTML += `<div class="msg engine">मुझे यह नहीं पता। सिखाने के लिए 'learn: कीवर्ड: जवाब' लिखें या 'Google: सवाल' लिखें।</div>`;
+            } else {
+                chatBox.innerHTML += `<div class="msg engine">मुझे यह नहीं पता। सिखाने के लिए 'learn: कीवर्ड: जवाब' लिखें।</div>`;
             }
 
-            document.getElementById("userInput").value = "";
+            inputField.value = "";
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
