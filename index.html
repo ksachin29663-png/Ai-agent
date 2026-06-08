@@ -2,54 +2,60 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sachin's Dev Engine</title>
+    <title>Sachin's Pro Dev Engine</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
-        #chat-box { height: 300px; overflow-y: scroll; background: white; padding: 10px; border: 1px solid #ccc; margin-bottom: 10px; }
-        input { width: 70%; padding: 10px; }
-        button { padding: 10px; cursor: pointer; }
+        body { font-family: sans-serif; padding: 20px; background: #222; color: #fff; }
+        #chat-box { height: 350px; overflow-y: scroll; background: #333; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
+        input { width: 65%; padding: 12px; border-radius: 5px; border: none; }
+        button { padding: 12px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 5px; }
     </style>
 </head>
 <body>
 
-    <h2>Sachin's Personal AI Engine</h2>
+    <h2>Sachin's Pro Dev Engine</h2>
     <div id="chat-box"></div>
-    <input type="text" id="userInput" placeholder="अपनी कोडिंग समस्या बताएं...">
-    <button onclick="askEngine()">Run Query</button>
+    <input type="text" id="userInput" placeholder="कुछ पूछें या सिखाएं...">
+    <button onclick="askEngine()">भेजें</button>
 
     <script>
-        // यह तुम्हारा अपना 'ज्ञान का भंडार' है
+        // यह तुम्हारा 'मास्टर नॉलेज बेस' है
         let brain = JSON.parse(localStorage.getItem('sachinBrain')) || {
-            "flutter": "Flutter के लिए 'Column', 'Row' और 'Scaffold' का उपयोग करो।",
-            "node": "Node.js के लिए 'npm init' और 'express' का उपयोग करो।",
-            "android": "Android के लिए Termux और Acode सबसे बेहतरीन टूल्स हैं।",
-            "hello": "नमस्ते! मैं सचिन का बनाया हुआ असिस्टेंट हूँ, अपना कोडिंग सवाल पूछो।"
+            "hii": "नमस्ते! मैं सचिन का बनाया हुआ एआई असिस्टेंट हूँ।",
+            "flutter": "Flutter में 'Column' और 'Row' का उपयोग करके UI बनाएं।",
+            "node": "Node.js के लिए 'npm install express' का उपयोग करें।",
+            "android": "Android के लिए Acode और Termux बेस्ट हैं।",
+            "html": "HTML संरचना (structure) के लिए होता है।",
+            "javascript": "JS लॉजिक के लिए है।",
+            "सचिन": "सचिन एक प्रो डेवलपर है जो बिना API के अपना खुद का सिस्टम बना रहा है!",
+            "help": "तुम मुझसे कोडिंग के बारे में पूछ सकते हो या 'learn: कीवर्ड: जानकारी' लिखकर मुझे कुछ भी नया सिखा सकते हो।"
         };
 
         function askEngine() {
-            let input = document.getElementById("userInput").value.toLowerCase();
+            let input = document.getElementById("userInput").value.toLowerCase().trim();
             let chatBox = document.getElementById("chat-box");
+            
+            if (!input) return;
+
             let response = "";
 
-            // लॉजिक इंजन
-            if (brain[input]) {
-                response = brain[input];
-            } else if (input.startsWith("learn:")) {
-                // नया ज्ञान सिखाने का तरीका (जैसे: "learn: react: React is for UI")
+            if (input.startsWith("learn:")) {
                 let parts = input.split(":");
-                brain[parts[1].trim()] = parts[2].trim();
-                localStorage.setItem('sachinBrain', JSON.stringify(brain));
-                response = "मैंने यह सीख लिया!";
+                if (parts.length >= 3) {
+                    brain[parts[1].trim()] = parts[2].trim();
+                    localStorage.setItem('sachinBrain', JSON.stringify(brain));
+                    response = "सीख लिया! अब मैं इसे याद रखूँगा।";
+                }
+            } else if (brain[input]) {
+                response = brain[input];
             } else {
                 response = "मुझे इसका उत्तर नहीं पता। मुझे सिखाने के लिए टाइप करें: 'learn: कीवर्ड: उत्तर'";
             }
 
             chatBox.innerHTML += `<p><b>तुम:</b> ${input}</p>`;
-            chatBox.innerHTML += `<p><b>Engine:</b> ${response}</p>`;
+            chatBox.innerHTML += `<p style="color: #00ff00;"><b>Engine:</b> ${response}</p>`;
             document.getElementById("userInput").value = "";
+            chatBox.scrollTop = chatBox.scrollHeight;
         }
     </script>
 </body>
-  </html>
-  
+</html>
